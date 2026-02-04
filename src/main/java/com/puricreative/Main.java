@@ -4,6 +4,7 @@ import com.batoulapps.adhan2.*;
 import com.batoulapps.adhan2.data.DateComponents;
 import com.batoulapps.adhan2.model.Rounding;
 import com.batoulapps.adhan2.model.Shafaq;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,24 +12,16 @@ import java.util.TimeZone;
 
 public class Main {
     public static void main(String args[]) {
-        Coordinates coordinates = new Coordinates(-5.376D, 105.277D);
-        DateComponents dateComponents = new DateComponents(2026, 2, 4);
-        CalculationParameters calculationParameters = new CalculationParameters(
-                20.0,
-                18.0,
-                0,
-                CalculationMethod.NORTH_AMERICA,
-                Madhab.SHAFI,
-                null,
-                new PrayerAdjustments(),
-                new PrayerAdjustments(),
-                Rounding.NEAREST,
-                Shafaq.AHMER
-        );
-
-        PrayerTimes prayerTimes = new PrayerTimes(coordinates, dateComponents, calculationParameters);
+        PrayerTimes prayerTimes = getPrayerTimes();
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
         formatter.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+
+        System.out.println(
+                String.format("%s/%s/%s",
+                        prayerTimes.getDateComponents().getDay(),
+                        prayerTimes.getDateComponents().getMonth(),
+                        prayerTimes.getDateComponents().getYear()
+                ));
 
         Date d;
         d = Date.from(java.time.Instant.ofEpochSecond(prayerTimes.getFajr().getEpochSeconds()));
@@ -48,5 +41,25 @@ public class Main {
 
         d = Date.from(java.time.Instant.ofEpochSecond(prayerTimes.getIsha().getEpochSeconds()));
         System.out.println("Isha: " + formatter.format(d));
+    }
+
+    @NotNull
+    private static PrayerTimes getPrayerTimes() {
+        Coordinates coordinates = new Coordinates(-5.376D, 105.277D);
+        DateComponents dateComponents = new DateComponents(2026, 2, 6);
+        CalculationParameters calculationParameters = new CalculationParameters(
+                20.0,
+                18.0,
+                0,
+                CalculationMethod.NORTH_AMERICA,
+                Madhab.SHAFI,
+                null,
+                new PrayerAdjustments(),
+                new PrayerAdjustments(),
+                Rounding.NEAREST,
+                Shafaq.AHMER
+        );
+
+        return new PrayerTimes(coordinates, dateComponents, calculationParameters);
     }
 }
